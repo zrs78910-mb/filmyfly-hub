@@ -1,12 +1,89 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState, useEffect } from "react";
+import { useMovies } from "@/hooks/useMovies";
+import { usePagination } from "@/hooks/usePagination";
+import { BrandHeader } from "@/components/BrandHeader";
+import { SearchBar } from "@/components/SearchBar";
+import { MovieGrid } from "@/components/MovieGrid";
+import { SkeletonGrid } from "@/components/SkeletonGrid";
+import { Pagination } from "@/components/Pagination";
+import { MovieDetail } from "@/components/MovieDetail";
+import { Movie } from "@/types/movie";
 
 const Index = () => {
+  const { filteredMovies, loading, error, searchQuery, setSearchQuery } = useMovies();
+  const { currentPage, totalPages, paginatedItems, goToPage, resetPage } = usePagination(filteredMovies);
+  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
+
+  // Handle hash-based routing for movie details
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash;
+      if (hash && hash.length > 1) {
+        const title = decodeURIComponent(hash.substring(1));
+        const movie = filteredMovies.find((m) => m.Title === title);
+        if (movie) {
+          setSelectedMovie(movie);
+          document.body.style.overflow = "hidden";
+        }
+      } else {
+        setSelectedMovie(null);
+        document.body.style.overflow = "auto";
+      }
+    };
+
+    handleHashChange();
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, [filteredMovies]);
+
+  // Reset page when search changes
+  useEffect(() => {
+    resetPage();
+  }, [searchQuery]);
+
+  const handleMovieClick = (movie: Movie) => {
+    window.location.hash = encodeURIComponent(movie.Title);
+  };
+
+  const handleClose = () => {
+    history.pushState("", document.title, window.location.pathname + window.location.search);
+    setSelectedMovie(null);
+    document.body.style.overflow = "auto";
+  };
+
+  const handleReset = () => {
+    setSearchQuery("");
+    handleClose();
+    resetPage();
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen flex flex-col">
+      <BrandHeader onReset={handleReset} />
+      <SearchBar value={searchQuery} onChange={setSearchQuery} />
+
+      <main className="flex-1 container py-6">
+        {loading ? (
+          <SkeletonGrid />
+        ) : error ? (
+          <div className="text-center py-20">
+            <p className="text-destructive">{error}</p>
+          </div>
+        ) : (
+          <>
+            <MovieGrid movies={paginatedItems} onMovieClick={handleMovieClick} />
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={goToPage}
+            />
+          </>
+        )}
+      </main>
+
+      {selectedMovie && (
+        <MovieDetail movie={selectedMovie} onClose={handleClose} />
+      )}
     </div>
   );
 };
