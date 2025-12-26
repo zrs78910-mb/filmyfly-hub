@@ -1,4 +1,4 @@
-import { ArrowLeft, Bolt, Download, Images } from "lucide-react";
+import { ArrowLeft, Bolt, Download, Images, Play, Sparkles } from "lucide-react";
 import { Movie } from "@/types/movie";
 
 interface MovieDetailProps {
@@ -8,13 +8,15 @@ interface MovieDetailProps {
 
 function generateTags(title: string) {
   const t = title.toLowerCase();
-  const tags: { label: string; isQuality?: boolean }[] = [];
+  const tags: { label: string; type: "quality" | "language" | "audio" }[] = [];
   
-  if (t.includes("hindi")) tags.push({ label: "Hindi" });
-  if (t.includes("dual audio")) tags.push({ label: "Dual Audio" });
-  if (t.includes("4k")) tags.push({ label: "4K UHD", isQuality: true });
-  else if (t.includes("1080p")) tags.push({ label: "1080p", isQuality: true });
-  else tags.push({ label: "HD", isQuality: true });
+  if (t.includes("hindi")) tags.push({ label: "Hindi", type: "language" });
+  if (t.includes("english")) tags.push({ label: "English", type: "language" });
+  if (t.includes("dual audio")) tags.push({ label: "Dual Audio", type: "audio" });
+  if (t.includes("4k")) tags.push({ label: "4K UHD", type: "quality" });
+  else if (t.includes("1080p")) tags.push({ label: "1080p", type: "quality" });
+  else if (t.includes("720p")) tags.push({ label: "720p", type: "quality" });
+  else tags.push({ label: "HD", type: "quality" });
 
   return tags;
 }
@@ -51,82 +53,109 @@ export function MovieDetail({ movie, onClose }: MovieDetailProps) {
   const links = parseLinks(movie["Download Links"]);
   const screenshot = movie["Screenshot URL"];
 
+  const getTagStyle = (type: string) => {
+    switch (type) {
+      case "quality": return "gradient-primary";
+      case "language": return "bg-cyan/20 text-cyan border border-cyan/30";
+      case "audio": return "bg-purple/20 text-purple border border-purple/30";
+      default: return "bg-muted text-muted-foreground";
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-[100] bg-background overflow-y-auto animate-fade-in">
       {/* Back Button */}
       <button
         onClick={onClose}
-        className="fixed top-5 left-5 z-[110] w-11 h-11 rounded-full bg-background/60 backdrop-blur-sm border border-border/50 flex items-center justify-center text-foreground transition-colors hover:bg-secondary"
+        className="fixed top-4 left-4 z-[110] w-12 h-12 rounded-full glass-card flex items-center justify-center text-foreground transition-all duration-300 hover:bg-primary/20 hover:border-primary/50 hover:scale-110 active:scale-95 group"
         aria-label="Go back"
       >
-        <ArrowLeft className="w-5 h-5" />
+        <ArrowLeft className="w-5 h-5 transition-transform group-hover:-translate-x-0.5" />
       </button>
 
-      {/* Backdrop */}
+      {/* Animated Backdrop */}
       {thumbnail && (
         <div
-          className="fixed top-0 left-0 w-full h-[60vh] -z-10 opacity-30"
+          className="fixed top-0 left-0 w-full h-[70vh] -z-10"
           style={{
-            maskImage: "linear-gradient(to bottom, black, transparent)",
-            WebkitMaskImage: "linear-gradient(to bottom, black, transparent)",
+            maskImage: "linear-gradient(to bottom, black 30%, transparent)",
+            WebkitMaskImage: "linear-gradient(to bottom, black 30%, transparent)",
           }}
         >
           <img
             src={thumbnail}
             alt=""
-            className="w-full h-full object-cover blur-[25px] scale-110"
+            className="w-full h-full object-cover blur-3xl scale-125 opacity-40 animate-blur-in"
           />
+          {/* Gradient Mesh Overlay */}
+          <div className="absolute inset-0 gradient-mesh opacity-60" />
         </div>
       )}
 
       {/* Content */}
-      <main className="container max-w-4xl pt-20 pb-10 animate-slide-up">
-        <div className="grid md:grid-cols-[280px_1fr] gap-8">
+      <main className="container max-w-5xl pt-20 pb-12">
+        <div className="grid md:grid-cols-[300px_1fr] gap-8 animate-slide-up">
           {/* Poster */}
-          <div className="flex justify-center">
-            <img
-              src={thumbnail || "https://via.placeholder.com/300x450?text=No+Img"}
-              alt={movie.Title}
-              className="w-full max-w-[280px] rounded-xl border border-border/50 shadow-2xl"
-            />
+          <div className="flex justify-center md:justify-start">
+            <div className="relative group">
+              <img
+                src={thumbnail || "https://via.placeholder.com/300x450?text=No+Img"}
+                alt={movie.Title}
+                className="w-full max-w-[280px] rounded-2xl border border-border/50 shadow-2xl shadow-primary/10 transition-transform duration-500 group-hover:scale-[1.02]"
+              />
+              {/* Play Overlay */}
+              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="w-16 h-16 rounded-full gradient-primary flex items-center justify-center glow-primary animate-pulse-glow">
+                  <Play className="w-7 h-7 text-foreground fill-current ml-1" />
+                </div>
+              </div>
+              {/* Border Glow */}
+              <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-primary via-purple to-cyan opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-500 -z-10" />
+            </div>
           </div>
 
           {/* Info */}
-          <div>
-            <h1 className="text-2xl md:text-3xl font-extrabold mb-4">{movie.Title}</h1>
-            
-            {/* Tags */}
-            <div className="flex flex-wrap gap-2 mb-6">
-              {tags.map((tag, i) => (
-                <span
-                  key={i}
-                  className={`px-3 py-1 rounded-full text-xs font-medium ${
-                    tag.isQuality
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted text-muted-foreground"
-                  }`}
-                >
-                  {tag.label}
-                </span>
-              ))}
+          <div className="space-y-6">
+            {/* Title */}
+            <div>
+              <h1 className="text-3xl md:text-4xl font-extrabold leading-tight mb-4 animate-fade-in" style={{ animationDelay: "0.1s" }}>
+                {movie.Title}
+              </h1>
+              
+              {/* Tags */}
+              <div className="flex flex-wrap gap-2 animate-fade-in" style={{ animationDelay: "0.2s" }}>
+                {tags.map((tag, i) => (
+                  <span
+                    key={i}
+                    className={`px-3 py-1 rounded-full text-xs font-semibold ${getTagStyle(tag.type)}`}
+                  >
+                    {tag.label}
+                  </span>
+                ))}
+              </div>
             </div>
 
-            <p className="text-muted-foreground leading-relaxed mb-6">
-              This file is protected and hosted on high-speed servers. Click below to download instantly.
+            {/* Description */}
+            <p className="text-muted-foreground leading-relaxed animate-fade-in" style={{ animationDelay: "0.3s" }}>
+              This file is protected and hosted on high-speed servers. 
+              Click below to download instantly with maximum speed.
             </p>
 
-            {/* Download Links */}
-            <section className="bg-card/50 border border-border/50 rounded-2xl p-5">
-              <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider mb-4">
-                <Bolt className="w-4 h-4 text-gold" />
-                Download Links
+            {/* Download Links Section */}
+            <section className="glass-card rounded-2xl p-6 animate-fade-in" style={{ animationDelay: "0.4s" }}>
+              <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider mb-5">
+                <div className="p-1.5 rounded-lg gradient-gold">
+                  <Bolt className="w-4 h-4 text-gold-foreground" />
+                </div>
+                <span className="text-gradient-gold">Download Links</span>
               </h2>
 
               {links && links.length > 0 ? (
                 <div className="space-y-2">
                   {links.map((item, i) =>
                     item.type === "header" ? (
-                      <div key={i} className="text-sm text-muted-foreground font-medium pt-2 first:pt-0">
+                      <div key={i} className="text-sm text-muted-foreground font-semibold pt-3 first:pt-0 flex items-center gap-2">
+                        <Sparkles className="w-3 h-3 text-gold" />
                         {item.label}
                       </div>
                     ) : (
@@ -135,39 +164,54 @@ export function MovieDetail({ movie, onClose }: MovieDetailProps) {
                         href={item.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-between bg-secondary border border-border rounded-xl px-4 py-3 text-foreground transition-colors hover:bg-muted hover:border-primary"
+                        className="group flex items-center justify-between bg-secondary/80 border border-border rounded-xl px-4 py-3.5 text-foreground transition-all duration-300 hover:bg-primary/10 hover:border-primary/50 hover:translate-x-1"
                       >
-                        <span className="truncate pr-4">{item.label}</span>
-                        <Download className="w-4 h-4 flex-shrink-0" />
+                        <span className="truncate pr-4 font-medium">{item.label}</span>
+                        <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center group-hover:bg-primary transition-colors duration-300">
+                          <Download className="w-4 h-4 text-primary group-hover:text-primary-foreground transition-colors" />
+                        </div>
                       </a>
                     )
                   )}
                 </div>
               ) : (
-                <p className="text-muted-foreground">Links coming soon...</p>
+                <div className="text-center py-8 text-muted-foreground">
+                  <p className="font-medium">Links coming soon...</p>
+                  <p className="text-sm mt-1 opacity-70">Check back later for download options</p>
+                </div>
               )}
             </section>
 
-            {/* Screenshot */}
+            {/* Screenshot Section */}
             {screenshot && (
-              <section className="mt-6">
-                <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider mb-4">
-                  <Images className="w-4 h-4 text-gold" />
-                  Preview / Screenshots
+              <section className="animate-fade-in" style={{ animationDelay: "0.5s" }}>
+                <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider mb-4">
+                  <div className="p-1.5 rounded-lg bg-purple/20">
+                    <Images className="w-4 h-4 text-purple" />
+                  </div>
+                  <span className="text-purple">Preview / Screenshots</span>
                 </h2>
-                <img
-                  src={screenshot}
-                  alt="Screenshot"
-                  className="w-full rounded-xl border border-border"
-                />
+                <div className="relative group overflow-hidden rounded-xl">
+                  <img
+                    src={screenshot}
+                    alt="Screenshot"
+                    className="w-full rounded-xl border border-border transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </div>
               </section>
             )}
           </div>
         </div>
 
         {/* Footer */}
-        <footer className="text-center text-muted-foreground text-sm mt-12">
-          © 2025 FilmyFly Premium
+        <footer className="text-center text-muted-foreground text-sm mt-16 pt-8 border-t border-border/30 animate-fade-in" style={{ animationDelay: "0.6s" }}>
+          <div className="flex items-center justify-center gap-2">
+            <span className="text-foreground font-bold">FILMY</span>
+            <span className="text-primary font-bold">FLY</span>
+            <span className="shimmer-text text-xs">PREMIUM</span>
+          </div>
+          <p className="mt-2 opacity-60">© 2025 All Rights Reserved</p>
         </footer>
       </main>
     </div>

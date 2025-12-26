@@ -58,28 +58,67 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <BrandHeader onReset={handleReset} />
-      <SearchBar value={searchQuery} onChange={setSearchQuery} />
+    <div className="min-h-screen flex flex-col relative">
+      {/* Background Mesh */}
+      <div className="fixed inset-0 gradient-mesh opacity-30 pointer-events-none" />
+      
+      {/* Content */}
+      <div className="relative z-10">
+        <BrandHeader onReset={handleReset} />
+        <SearchBar value={searchQuery} onChange={setSearchQuery} />
 
-      <main className="flex-1 container py-6">
-        {loading ? (
-          <SkeletonGrid />
-        ) : error ? (
-          <div className="text-center py-20">
-            <p className="text-destructive">{error}</p>
+        <main className="flex-1 container py-8">
+          {/* Results Count */}
+          {!loading && !error && filteredMovies.length > 0 && (
+            <div className="mb-6 animate-fade-in">
+              <p className="text-muted-foreground text-sm">
+                Showing <span className="text-foreground font-semibold">{paginatedItems.length}</span> of{" "}
+                <span className="text-foreground font-semibold">{filteredMovies.length}</span> results
+                {searchQuery && (
+                  <span>
+                    {" "}for "<span className="text-primary">{searchQuery}</span>"
+                  </span>
+                )}
+              </p>
+            </div>
+          )}
+
+          {loading ? (
+            <SkeletonGrid />
+          ) : error ? (
+            <div className="text-center py-20 animate-fade-in">
+              <div className="inline-block p-4 rounded-full bg-destructive/10 mb-4">
+                <div className="w-12 h-12 rounded-full bg-destructive/20 flex items-center justify-center">
+                  <span className="text-2xl">⚠️</span>
+                </div>
+              </div>
+              <p className="text-destructive font-medium">{error}</p>
+              <p className="text-muted-foreground text-sm mt-2">Please check your internet connection</p>
+            </div>
+          ) : (
+            <>
+              <MovieGrid movies={paginatedItems} onMovieClick={handleMovieClick} />
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={goToPage}
+              />
+            </>
+          )}
+        </main>
+
+        {/* Footer */}
+        <footer className="py-6 border-t border-border/30">
+          <div className="container text-center">
+            <div className="flex items-center justify-center gap-1 mb-2">
+              <span className="text-foreground font-bold text-sm">FILMY</span>
+              <span className="text-primary font-bold text-sm">FLY</span>
+              <span className="shimmer-text text-[10px] ml-1">PREMIUM</span>
+            </div>
+            <p className="text-muted-foreground text-xs">© 2025 All Rights Reserved</p>
           </div>
-        ) : (
-          <>
-            <MovieGrid movies={paginatedItems} onMovieClick={handleMovieClick} />
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={goToPage}
-            />
-          </>
-        )}
-      </main>
+        </footer>
+      </div>
 
       {selectedMovie && (
         <MovieDetail movie={selectedMovie} onClose={handleClose} />
