@@ -24,11 +24,11 @@ export function SearchBar({ value, onChange }: SearchBarProps) {
             className="w-full bg-secondary/80 border-2 border-border/50 rounded-2xl py-3.5 px-5 pl-12 pr-12 text-foreground placeholder:text-muted-foreground outline-none transition-all duration-300 focus:bg-secondary focus:border-primary/50 focus:shadow-[0_0_30px_hsl(var(--primary)/0.15)] hover:border-border"
           />
           
-          {/* Clear Button */}
+          {/* Clear Button - Centered in middle */}
           {value && (
             <button
               onClick={() => onChange("")}
-              className="absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded-full bg-muted/50 hover:bg-muted text-muted-foreground hover:text-foreground transition-all duration-200 animate-scale-in"
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-muted/80 hover:bg-primary/80 text-muted-foreground hover:text-foreground transition-all duration-200 animate-scale-in flex items-center justify-center"
             >
               <X className="w-4 h-4" />
             </button>

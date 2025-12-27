@@ -24,11 +24,11 @@ export function MovieCard({ movie, onClick, index = 0 }: MovieCardProps) {
   return (
     <article
       onClick={onClick}
-      className="group relative rounded-xl overflow-hidden cursor-pointer card-hover rainbow-border animate-fade-in"
+      className="group rounded-xl cursor-pointer card-hover rainbow-border animate-fade-in"
       style={{ animationDelay: `${index * 0.05}s`, animationFillMode: "backwards" }}
     >
       {/* Inner Card Content */}
-      <div className="relative bg-card rounded-xl overflow-hidden">
+      <div className="relative overflow-hidden rounded-lg">
         {/* Poster Container */}
         <div className="relative aspect-[2/3] bg-secondary overflow-hidden">
           {/* Image */}
