@@ -261,16 +261,8 @@
   /* Rainbow Animated Border */
   .rainbow-border {
     position: relative;
-    background: hsl(var(--card));
     border-radius: var(--radius);
-    overflow: hidden;
-  }
-
-  .rainbow-border::before {
-    content: '';
-    position: absolute;
-    inset: -2px;
-    border-radius: inherit;
+    padding: 3px;
     background: linear-gradient(
       45deg,
       hsl(var(--primary)),
@@ -282,29 +274,63 @@
       hsl(var(--primary))
     );
     background-size: 400% 400%;
-    animation: rainbow-rotate 4s linear infinite;
-    z-index: -1;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    animation: rainbow-rotate 3s linear infinite;
   }
 
-  .rainbow-border:hover::before {
-    opacity: 1;
-  }
-
-  .rainbow-border::after {
-    content: '';
-    position: absolute;
-    inset: 2px;
-    border-radius: calc(var(--radius) - 2px);
+  .rainbow-border > * {
     background: hsl(var(--card));
-    z-index: -1;
+    border-radius: calc(var(--radius) - 3px);
   }
 
   @keyframes rainbow-rotate {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
+  }
+
+  /* Detail Poster Border Glow */
+  .detail-poster-glow {
+    position: relative;
+  }
+
+  .detail-poster-glow::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 24px;
+    background: linear-gradient(
+      45deg,
+      hsl(var(--primary)),
+      hsl(var(--gold)),
+      hsl(var(--cyan)),
+      hsl(var(--purple)),
+      hsl(var(--pink)),
+      hsl(var(--primary))
+    );
+    background-size: 400% 400%;
+    animation: rainbow-rotate 3s linear infinite;
+    z-index: -1;
+    filter: blur(8px);
+    opacity: 0.8;
+  }
+
+  .detail-poster-glow::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 20px;
+    background: linear-gradient(
+      45deg,
+      hsl(var(--primary)),
+      hsl(var(--gold)),
+      hsl(var(--cyan)),
+      hsl(var(--purple)),
+      hsl(var(--pink)),
+      hsl(var(--primary))
+    );
+    background-size: 400% 400%;
+    animation: rainbow-rotate 3s linear infinite;
+    z-index: -1;
   }
 
   /* Poster Glow Effect */

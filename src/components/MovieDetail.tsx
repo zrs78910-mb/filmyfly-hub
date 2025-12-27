@@ -83,40 +83,36 @@ export function MovieDetail({ movie, onClose }: MovieDetailProps) {
         <ArrowLeft className="w-5 h-5 transition-transform group-hover:-translate-x-0.5" />
       </button>
 
-      {/* Animated Backdrop with Shadow */}
+      {/* Animated Backdrop with Heavy Shadow */}
       {thumbnail && (
-        <div
-          className="fixed top-0 left-0 w-full h-[70vh] -z-10"
-          style={{
-            maskImage: "linear-gradient(to bottom, black 30%, transparent)",
-            WebkitMaskImage: "linear-gradient(to bottom, black 30%, transparent)",
-          }}
-        >
+        <div className="fixed top-0 left-0 w-full h-[70vh] -z-10">
           <img
             src={thumbnail}
             alt=""
-            className="w-full h-full object-cover blur-3xl scale-125 opacity-40 animate-blur-in"
+            className="w-full h-full object-cover blur-3xl scale-125 opacity-30 animate-blur-in"
           />
           {/* Gradient Mesh Overlay */}
           <div className="absolute inset-0 gradient-mesh opacity-60" />
-          {/* Bottom Shadow Overlay */}
-          <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-background via-background/80 to-transparent" />
+          {/* Heavy Bottom Shadow - Multiple layers for deep black */}
+          <div className="absolute bottom-0 left-0 right-0 h-[60%] bg-gradient-to-t from-background via-background/95 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 h-[40%] bg-gradient-to-t from-background to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 h-[20%] bg-background" />
         </div>
       )}
 
       {/* Content */}
       <main className="container max-w-5xl pt-20 pb-12">
         <div className="grid md:grid-cols-[300px_1fr] gap-8 animate-slide-up">
-          {/* Poster with Animated Glow */}
+          {/* Poster with Thick Animated Rainbow Border Glow */}
           <div className="flex justify-center md:justify-start">
-            <div className="relative group poster-glow">
+            <div className="relative group detail-poster-glow poster-glow">
               <img
                 src={thumbnail || "https://via.placeholder.com/300x450?text=No+Img"}
                 alt={movie.Title}
-                className="w-full max-w-[280px] rounded-2xl border-2 border-primary/30 shadow-2xl backdrop-shadow transition-transform duration-500 group-hover:scale-[1.02]"
+                className="relative z-10 w-full max-w-[280px] rounded-2xl shadow-2xl backdrop-shadow transition-transform duration-500 group-hover:scale-[1.02]"
               />
               {/* Play Overlay */}
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <div className="absolute inset-0 z-20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <div className="w-16 h-16 rounded-full gradient-primary flex items-center justify-center glow-primary animate-pulse-glow">
                   <Play className="w-7 h-7 text-foreground fill-current ml-1" />
                 </div>
