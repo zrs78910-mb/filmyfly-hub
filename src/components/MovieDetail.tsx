@@ -47,6 +47,16 @@ function parseLinks(text?: string) {
   return elements;
 }
 
+// Different colors for download buttons
+const buttonColors = [
+  "from-primary to-pink",
+  "from-cyan to-purple",
+  "from-gold to-accent",
+  "from-purple to-primary",
+  "from-pink to-gold",
+  "from-accent to-cyan",
+];
+
 export function MovieDetail({ movie, onClose }: MovieDetailProps) {
   const thumbnail = movie["Thumbnail URL"] || "";
   const tags = generateTags(movie.Title);
@@ -73,7 +83,7 @@ export function MovieDetail({ movie, onClose }: MovieDetailProps) {
         <ArrowLeft className="w-5 h-5 transition-transform group-hover:-translate-x-0.5" />
       </button>
 
-      {/* Animated Backdrop */}
+      {/* Animated Backdrop with Shadow */}
       {thumbnail && (
         <div
           className="fixed top-0 left-0 w-full h-[70vh] -z-10"
@@ -89,19 +99,21 @@ export function MovieDetail({ movie, onClose }: MovieDetailProps) {
           />
           {/* Gradient Mesh Overlay */}
           <div className="absolute inset-0 gradient-mesh opacity-60" />
+          {/* Bottom Shadow Overlay */}
+          <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-background via-background/80 to-transparent" />
         </div>
       )}
 
       {/* Content */}
       <main className="container max-w-5xl pt-20 pb-12">
         <div className="grid md:grid-cols-[300px_1fr] gap-8 animate-slide-up">
-          {/* Poster */}
+          {/* Poster with Animated Glow */}
           <div className="flex justify-center md:justify-start">
-            <div className="relative group">
+            <div className="relative group poster-glow">
               <img
                 src={thumbnail || "https://via.placeholder.com/300x450?text=No+Img"}
                 alt={movie.Title}
-                className="w-full max-w-[280px] rounded-2xl border border-border/50 shadow-2xl shadow-primary/10 transition-transform duration-500 group-hover:scale-[1.02]"
+                className="w-full max-w-[280px] rounded-2xl border-2 border-primary/30 shadow-2xl backdrop-shadow transition-transform duration-500 group-hover:scale-[1.02]"
               />
               {/* Play Overlay */}
               <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -109,8 +121,6 @@ export function MovieDetail({ movie, onClose }: MovieDetailProps) {
                   <Play className="w-7 h-7 text-foreground fill-current ml-1" />
                 </div>
               </div>
-              {/* Border Glow */}
-              <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-primary via-purple to-cyan opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-500 -z-10" />
             </div>
           </div>
 
@@ -164,11 +174,20 @@ export function MovieDetail({ movie, onClose }: MovieDetailProps) {
                         href={item.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group flex items-center justify-between bg-secondary/80 border border-border rounded-xl px-4 py-3.5 text-foreground transition-all duration-300 hover:bg-primary/10 hover:border-primary/50 hover:translate-x-1"
+                        className="group flex items-center justify-between border border-border rounded-xl px-4 py-3.5 text-foreground transition-all duration-300 hover:translate-x-1 hover:shadow-lg relative overflow-hidden"
+                        style={{
+                          background: `linear-gradient(135deg, hsl(var(--secondary)) 0%, hsl(var(--card)) 100%)`,
+                        }}
                       >
-                        <span className="truncate pr-4 font-medium">{item.label}</span>
-                        <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center group-hover:bg-primary transition-colors duration-300">
-                          <Download className="w-4 h-4 text-primary group-hover:text-primary-foreground transition-colors" />
+                        {/* Colored Gradient Overlay */}
+                        <div 
+                          className={`absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-300 bg-gradient-to-r ${buttonColors[i % buttonColors.length]}`}
+                        />
+                        <span className="truncate pr-4 font-medium relative z-10">{item.label}</span>
+                        <div 
+                          className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300 bg-gradient-to-r ${buttonColors[i % buttonColors.length]} shadow-lg`}
+                        >
+                          <Download className="w-4 h-4 text-foreground" />
                         </div>
                       </a>
                     )
