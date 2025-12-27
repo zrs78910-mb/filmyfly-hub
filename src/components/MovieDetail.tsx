@@ -122,14 +122,17 @@ export function MovieDetail({ movie, onClose }: MovieDetailProps) {
 
           {/* Info */}
           <div className="space-y-6">
-            {/* Title */}
-            <div>
-              <h1 className="text-3xl md:text-4xl font-extrabold leading-tight mb-4 animate-fade-in" style={{ animationDelay: "0.1s" }}>
+            {/* Title with upward shadow */}
+            <div className="relative">
+              {/* Upward Black Shadow */}
+              <div className="absolute -top-12 left-0 right-0 h-16 bg-gradient-to-b from-transparent via-background/60 to-background pointer-events-none" />
+              
+              <h1 className="text-3xl md:text-4xl font-extrabold leading-tight mb-4 animate-fade-in relative z-10" style={{ animationDelay: "0.1s" }}>
                 {movie.Title}
               </h1>
               
               {/* Tags */}
-              <div className="flex flex-wrap gap-2 animate-fade-in" style={{ animationDelay: "0.2s" }}>
+              <div className="flex flex-wrap gap-2 animate-fade-in relative z-10" style={{ animationDelay: "0.2s" }}>
                 {tags.map((tag, i) => (
                   <span
                     key={i}
@@ -180,10 +183,11 @@ export function MovieDetail({ movie, onClose }: MovieDetailProps) {
                           className={`absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-300 bg-gradient-to-r ${buttonColors[i % buttonColors.length]}`}
                         />
                         <span className="truncate pr-4 font-medium relative z-10">{item.label}</span>
+                        {/* 3D Download Icon */}
                         <div 
-                          className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300 bg-gradient-to-r ${buttonColors[i % buttonColors.length]} shadow-lg`}
+                          className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 bg-gradient-to-br ${buttonColors[i % buttonColors.length]} download-icon-3d group-hover:scale-110 group-hover:-translate-y-0.5`}
                         >
-                          <Download className="w-4 h-4 text-foreground" />
+                          <Download className="w-5 h-5 text-foreground drop-shadow-md" />
                         </div>
                       </a>
                     )
