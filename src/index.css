@@ -257,4 +257,130 @@
     mask-composite: exclude;
     pointer-events: none;
   }
+
+  /* Rainbow Animated Border */
+  .rainbow-border {
+    position: relative;
+    background: hsl(var(--card));
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .rainbow-border::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    background: linear-gradient(
+      45deg,
+      hsl(var(--primary)),
+      hsl(var(--gold)),
+      hsl(var(--accent)),
+      hsl(var(--cyan)),
+      hsl(var(--purple)),
+      hsl(var(--pink)),
+      hsl(var(--primary))
+    );
+    background-size: 400% 400%;
+    animation: rainbow-rotate 4s linear infinite;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .rainbow-border:hover::before {
+    opacity: 1;
+  }
+
+  .rainbow-border::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    border-radius: calc(var(--radius) - 2px);
+    background: hsl(var(--card));
+    z-index: -1;
+  }
+
+  @keyframes rainbow-rotate {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* Poster Glow Effect */
+  .poster-glow {
+    position: relative;
+  }
+
+  .poster-glow::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -20px;
+    right: -20px;
+    height: 60%;
+    transform: translateY(-50%);
+    background: linear-gradient(
+      90deg,
+      hsl(var(--primary) / 0.8),
+      transparent 30%,
+      transparent 70%,
+      hsl(var(--cyan) / 0.8)
+    );
+    filter: blur(20px);
+    animation: side-glow 3s ease-in-out infinite alternate;
+    z-index: -1;
+  }
+
+  @keyframes side-glow {
+    0% {
+      opacity: 0.5;
+      transform: translateY(-50%) scaleX(0.9);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(-50%) scaleX(1.1);
+    }
+  }
+
+  /* Header Light Effect */
+  .logo-glow {
+    position: relative;
+  }
+
+  .logo-glow::before,
+  .logo-glow::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 100px;
+    height: 40px;
+    transform: translateY(-50%);
+    border-radius: 50%;
+    filter: blur(25px);
+    animation: logo-light 2s ease-in-out infinite alternate;
+  }
+
+  .logo-glow::before {
+    left: -60px;
+    background: hsl(var(--primary) / 0.6);
+  }
+
+  .logo-glow::after {
+    right: -60px;
+    background: hsl(var(--gold) / 0.6);
+    animation-delay: 1s;
+  }
+
+  @keyframes logo-light {
+    0% { opacity: 0.4; transform: translateY(-50%) scale(0.8); }
+    100% { opacity: 0.9; transform: translateY(-50%) scale(1.2); }
+  }
+
+  /* Backdrop Shadow */
+  .backdrop-shadow {
+    box-shadow: 
+      0 50px 100px -20px hsl(var(--primary) / 0.4),
+      0 30px 60px -30px hsl(0 0% 0% / 0.8);
+  }
 }
