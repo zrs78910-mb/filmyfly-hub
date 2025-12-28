@@ -110,8 +110,9 @@ const Index = () => {
         {/* Footer */}
         <footer className="py-6 border-t border-border/30">
           <div className="container text-center">
-            <div className="flex items-center justify-center mb-2">
-              <span className="text-primary font-bold text-lg tracking-wide">FILMYFLY</span>
+            <div className="flex items-center justify-center gap-0.5 mb-2">
+              <span className="text-foreground font-bold text-lg tracking-wide">FILMY</span>
+              <span className="text-primary font-bold text-lg tracking-wide">FLY</span>
             </div>
             <p className="text-muted-foreground text-xs">© 2025 All Rights Reserved</p>
           </div>
