@@ -83,20 +83,21 @@ export function MovieDetail({ movie, onClose }: MovieDetailProps) {
         <ArrowLeft className="w-5 h-5 transition-transform group-hover:-translate-x-0.5" />
       </button>
 
-      {/* Animated Backdrop with Heavy Shadow */}
+      {/* Animated Backdrop with Blur and Heavy Bottom Shadow */}
       {thumbnail && (
         <div className="fixed top-0 left-0 w-full h-[70vh] -z-10">
           <img
             src={thumbnail}
             alt=""
-            className="w-full h-full object-cover blur-3xl scale-125 opacity-30 animate-blur-in"
+            className="w-full h-full object-cover blur-md scale-110 opacity-40 animate-blur-in"
           />
           {/* Gradient Mesh Overlay */}
-          <div className="absolute inset-0 gradient-mesh opacity-60" />
-          {/* Heavy Bottom Shadow - Multiple layers for deep black */}
-          <div className="absolute bottom-0 left-0 right-0 h-[60%] bg-gradient-to-t from-background via-background/95 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 h-[40%] bg-gradient-to-t from-background to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 h-[20%] bg-background" />
+          <div className="absolute inset-0 gradient-mesh opacity-50" />
+          {/* Heavy Bottom Shadow - Deep black from bottom fading upwards */}
+          <div className="absolute bottom-0 left-0 right-0 h-full bg-gradient-to-t from-background via-background/90 via-50% to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 h-[70%] bg-gradient-to-t from-background via-background/80 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 h-[50%] bg-gradient-to-t from-background to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 h-[25%] bg-background" />
         </div>
       )}
 
@@ -121,12 +122,12 @@ export function MovieDetail({ movie, onClose }: MovieDetailProps) {
           </div>
 
           {/* Info */}
-          <div className="space-y-6">
-            {/* Title with upward shadow */}
+          <div className="space-y-6 relative">
+            {/* Full Height Black Gradient from Bottom to Top */}
+            <div className="absolute -top-24 -left-8 -right-8 bottom-0 bg-gradient-to-t from-background via-background/70 via-30% to-transparent pointer-events-none -z-10" />
+            
+            {/* Title Section */}
             <div className="relative">
-              {/* Upward Black Shadow */}
-              <div className="absolute -top-12 left-0 right-0 h-16 bg-gradient-to-b from-transparent via-background/60 to-background pointer-events-none" />
-              
               <h1 className="text-3xl md:text-4xl font-extrabold leading-tight mb-4 animate-fade-in relative z-10" style={{ animationDelay: "0.1s" }}>
                 {movie.Title}
               </h1>
