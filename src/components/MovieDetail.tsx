@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { ArrowLeft, Bolt, Download, Images, Play, Sparkles } from "lucide-react";
 import { Movie } from "@/types/movie";
+import { PremiumLinkModal } from "./PremiumLinkModal";
 
 interface MovieDetailProps {
   movie: Movie;
@@ -62,6 +64,18 @@ export function MovieDetail({ movie, onClose }: MovieDetailProps) {
   const tags = generateTags(movie.Title);
   const links = parseLinks(movie["Download Links"]);
   const screenshot = movie["Screenshot URL"];
+
+  // Premium Link Modal State
+  const [premiumModal, setPremiumModal] = useState<{
+    isOpen: boolean;
+    url: string;
+    label: string;
+  }>({ isOpen: false, url: "", label: "" });
+
+  const handleDownloadClick = (e: React.MouseEvent<HTMLAnchorElement>, url: string, label: string) => {
+    e.preventDefault();
+    setPremiumModal({ isOpen: true, url, label });
+  };
 
   const getTagStyle = (type: string) => {
     switch (type) {
@@ -172,9 +186,8 @@ export function MovieDetail({ movie, onClose }: MovieDetailProps) {
                       <a
                         key={i}
                         href={item.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group flex items-center justify-between border border-border rounded-xl px-4 py-3.5 text-foreground transition-all duration-300 hover:translate-x-1 hover:shadow-lg relative overflow-hidden"
+                        onClick={(e) => handleDownloadClick(e, item.url!, item.label)}
+                        className="group flex items-center justify-between border border-border rounded-xl px-4 py-3.5 text-foreground transition-all duration-300 hover:translate-x-1 hover:shadow-lg relative overflow-hidden cursor-pointer"
                         style={{
                           background: `linear-gradient(135deg, hsl(var(--secondary)) 0%, hsl(var(--card)) 100%)`,
                         }}
@@ -234,6 +247,15 @@ export function MovieDetail({ movie, onClose }: MovieDetailProps) {
           <p className="mt-2 opacity-60">© 2025 All Rights Reserved</p>
         </footer>
       </main>
+
+      {/* Premium Link Modal */}
+      <PremiumLinkModal
+        isOpen={premiumModal.isOpen}
+        onClose={() => setPremiumModal({ isOpen: false, url: "", label: "" })}
+        originalUrl={premiumModal.url}
+        linkLabel={premiumModal.label}
+        movieTitle={movie.Title}
+      />
     </div>
   );
 }
